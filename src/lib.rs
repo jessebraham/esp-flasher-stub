@@ -1,20 +1,27 @@
+#![allow(static_mut_refs)] // TODO: We should avoid using these altogether
 #![no_std]
+
+pub use esp_hal as hal;
 
 // Re-export the correct target based on which feature is active
 #[cfg(feature = "esp32")]
-pub use targets::Esp32 as Target;
+pub use self::targets::Esp32 as Target;
 #[cfg(feature = "esp32c2")]
-pub use targets::Esp32c2 as Target;
+pub use self::targets::Esp32c2 as Target;
 #[cfg(feature = "esp32c3")]
-pub use targets::Esp32c3 as Target;
+pub use self::targets::Esp32c3 as Target;
 #[cfg(feature = "esp32c6")]
-pub use targets::Esp32c6 as Target;
+pub use self::targets::Esp32c6 as Target;
 #[cfg(feature = "esp32h2")]
-pub use targets::Esp32h2 as Target;
+pub use self::targets::Esp32h2 as Target;
 #[cfg(feature = "esp32s2")]
-pub use targets::Esp32s2 as Target;
+pub use self::targets::Esp32s2 as Target;
 #[cfg(feature = "esp32s3")]
-pub use targets::Esp32s3 as Target;
+pub use self::targets::Esp32s3 as Target;
+use self::{
+    hal::{uart::Uart, Blocking},
+    io::Noop,
+};
 
 pub mod commands;
 pub mod dprint;
@@ -22,13 +29,6 @@ pub mod io;
 pub mod miniz_types;
 pub mod protocol;
 pub mod targets;
-
-pub use esp_hal as hal;
-
-use self::{
-    hal::{peripherals::UART0, uart::Uart, Blocking},
-    io::Noop,
-};
 
 #[derive(Debug)]
 pub enum TransportMethod {
@@ -80,21 +80,21 @@ impl TransportMethod {
 // TODO this sucks, but default generic parameters are not used when inference
 // fails, meaning that we _have_ to specifiy the types here Seems like work on this has stalled: https://github.com/rust-lang/rust/issues/27336, note that I tried the feature and it didn't work.
 #[cfg(not(any(usb_device, usb0)))]
-pub type Transport = io::Transport<&'static mut Uart<'static, UART0, Blocking>, Noop, Noop>;
+pub type Transport = io::Transport<&'static mut Uart<'static, Blocking>, Noop, Noop>;
 
 #[cfg(all(usb_device, not(usb0)))]
 pub type Transport = io::Transport<
-    &'static mut Uart<'static, UART0, Blocking>,
+    &'static mut Uart<'static, Blocking>,
     &'static mut crate::hal::usb_serial_jtag::UsbSerialJtag<'static, Blocking>,
     Noop,
 >;
 
 #[cfg(all(not(usb_device), usb0))]
-pub type Transport = io::Transport<&'static mut Uart<'static, UART0, Blocking>, Noop, Noop>; // TODO replace Noop with usb type later
+pub type Transport = io::Transport<&'static mut Uart<'static, Blocking>, Noop, Noop>; // TODO replace Noop with usb type later
 
 #[cfg(all(usb_device, usb0))]
 pub type Transport = io::Transport<
-    &'static mut Uart<'static, UART0, Blocking>,
+    &'static mut Uart<'static, Blocking>,
     &'static mut crate::hal::usb_serial_jtag::UsbSerialJtag<'static, Blocking>,
     Noop, // TODO replace Noop with usb type later
 >;

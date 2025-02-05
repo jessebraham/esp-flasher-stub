@@ -58,11 +58,11 @@ pub struct Noop;
 
 impl InputIO for Noop {
     fn recv(&mut self) -> u8 {
-        todo!()
+        unimplemented!()
     }
 
     fn send(&mut self, _data: &[u8]) {
-        todo!()
+        unimplemented!()
     }
 }
 

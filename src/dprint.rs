@@ -4,7 +4,7 @@
 //! This is unsafe! It is asynchronous with normal UART1 usage and
 //! interrupts are not disabled.
 
-use crate::hal::{peripherals::UART1, prelude::nb};
+use crate::hal::peripherals::UART1;
 
 pub static mut DEBUG_LOG: DebugLog = DebugLog;
 
@@ -20,7 +20,7 @@ impl DebugLog {
         unsafe { (*UART1::ptr()).status().read().txfifo_cnt().bits().into() }
     }
 
-    fn write(&mut self, word: u8) -> nb::Result<(), Error> {
+    fn write(&mut self, word: u8) -> Result<(), ()> {
         if self.count() < 128 {
             unsafe {
                 (*UART1::ptr())
@@ -29,7 +29,7 @@ impl DebugLog {
             };
             Ok(())
         } else {
-            Err(nb::Error::WouldBlock)
+            Err(())
         }
     }
 }
@@ -38,7 +38,7 @@ impl core::fmt::Write for DebugLog {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
         s.as_bytes()
             .iter()
-            .try_for_each(|c| nb::block!(self.write(*c)))
+            .try_for_each(|c| self.write(*c))
             .map_err(|_| core::fmt::Error)
     }
 }

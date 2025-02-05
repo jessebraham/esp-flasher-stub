@@ -7,16 +7,10 @@ license      = "MIT OR Apache-2.0"
 categories   = ["embedded", "no-std"]
 
 [dependencies]
-critical-section = "1.1.2"
-esp-hal          = "0.17.0"
+critical-section = "1.2.0"
+esp-hal          = { git = "https://github.com/esp-rs/esp-hal", rev = "f46f862", features = ["unstable"] }
 heapless         = { version = "0.8.0", default-features = false }
 static_cell      = "2.1.0"
-
-[dev-dependencies]
-assert2        = "0.3.14"
-matches        = "0.1.10"
-mockall        = "0.12.1"
-mockall_double = "0.3.1"
 
 [features]
 esp32   = ["esp-hal/esp32"]

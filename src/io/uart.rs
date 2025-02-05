@@ -1,18 +1,10 @@
 use super::{UartMarker, RX_QUEUE};
 use crate::{
-    hal::{
-        peripherals::UART0,
-        prelude::handler,
-        uart::{Instance, Uart},
-        Blocking,
-    },
+    hal::{handler, peripherals::UART0, uart::Uart, Blocking},
     protocol::InputIO,
 };
 
-impl<T> InputIO for Uart<'_, T, Blocking>
-where
-    T: Instance,
-{
+impl InputIO for Uart<'_, Blocking> {
     fn recv(&mut self) -> u8 {
         unsafe {
             while critical_section::with(|_| RX_QUEUE.is_empty()) {}
@@ -25,7 +17,7 @@ where
     }
 }
 
-impl<T> UartMarker for Uart<'_, T, Blocking> where T: Instance {}
+impl UartMarker for Uart<'_, Blocking> {}
 
 #[handler]
 pub fn uart0_handler() {

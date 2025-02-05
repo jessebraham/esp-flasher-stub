@@ -483,10 +483,11 @@ impl<T: InputIO> Stub<T> {
         let mut response = Response::new(command.code);
 
         match self.process_cmd(payload, command.code, &mut response) {
-            Ok(response_sent) => match response_sent {
-                true => return,
-                false => (),
-            },
+            Ok(response_sent) => {
+                if response_sent {
+                    return;
+                }
+            }
             Err(err) => response.error(err),
         }
 

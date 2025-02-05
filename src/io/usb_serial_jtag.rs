@@ -1,11 +1,6 @@
 use super::{UsbSerialJtagMarker, RX_QUEUE};
 use crate::{
-    hal::{
-        peripherals::USB_DEVICE,
-        prelude::handler,
-        usb_serial_jtag::{Instance, UsbSerialJtag},
-        Blocking,
-    },
+    hal::{handler, peripherals::USB_DEVICE, usb_serial_jtag::UsbSerialJtag, Blocking},
     protocol::InputIO,
 };
 
@@ -26,7 +21,7 @@ impl UsbSerialJtagMarker for UsbSerialJtag<'_, Blocking> {}
 
 #[handler]
 pub fn usb_device_handler() {
-    let reg_block = USB_DEVICE::register_block();
+    let reg_block = USB_DEVICE::regs();
 
     while reg_block
         .ep1_conf()
