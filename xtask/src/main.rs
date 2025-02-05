@@ -269,11 +269,13 @@ fn concat_sections(elf: &ElfFile, list: &[&str]) -> (u64, Vec<u8>) {
     let mut data = Vec::new();
     let mut data_start = 0;
 
-    let sections: Vec<SectionHeader> = list
+    let mut sections: Vec<SectionHeader> = list
         .iter()
         .filter_map(|name| elf.find_section_by_name(name))
         .filter(|s| !s.raw_data(elf).is_empty())
         .collect();
+
+    sections.sort_by(|a, b| a.address().cmp(&b.address()));
 
     for (i, section) in sections.iter().enumerate() {
         let next_t = sections.get(i + 1);
