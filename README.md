@@ -1,7 +1,7 @@
 # esp-flasher-stub
 
 [![GitHub Workflow Status](https://github.com/esp-rs/esp-flasher-stub/actions/workflows/ci.yml/badge.svg)](https://github.com/esp-rs/esp-flasher-stub/actions/workflows/ci.yml)
-![MSRV](https://img.shields.io/badge/MSRV-1.76-blue?labelColor=1C2C2E&logo=Rust&style=flat-square)
+![MSRV](https://img.shields.io/badge/MSRV-1.84-blue?labelColor=1C2C2E&logo=Rust&style=flat-square)
 [![Matrix](https://img.shields.io/matrix/esp-rs:matrix.org?label=join%20matrix&color=BEC5C9&labelColor=1C2C2E&logo=matrix&style=flat-square)](https://matrix.to/#/#esp-rs:matrix.org)
 
 Rust implementation of the [esptool flasher stub](https://github.com/espressif/esptool-legacy-flasher-stub/).
@@ -77,6 +77,7 @@ In order to run `test_esptool.py` follow steps below:
 ## Debug logs
 
 In order to add debug logs, you can use the `--dprint` flag available in the `xtask` package for `build` and `wrap` commands:
+
 ```bash
 cd xtask/
 cargo run -- wrap esp32c3 --dprint
@@ -90,6 +91,7 @@ cargo build --release --target=riscv32imc-unknown-none-elf --features=esp32c3,dp
 ```
 
 This will print `esp-flasher-stub` debug messages using `UART1`. By default, `esp-flasher-stub` uses the following pins:
+
 - TX: GPIO 2
 - RX: GPIO 0
 
